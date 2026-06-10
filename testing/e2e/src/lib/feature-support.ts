@@ -191,12 +191,19 @@ export const matrix: Record<Feature, Set<Provider>> = {
   'sound-effects': new Set(['elevenlabs']),
   tts: new Set(['openai', 'grok', 'elevenlabs']),
   transcription: new Set(['openai', 'grok', 'elevenlabs']),
+  // OpenRouter excluded: its dedicated async video API
+  // (`POST /api/v1/videos` → poll → `unsigned_urls`) is a different wire
+  // shape from the OpenAI `/v1/videos` handler aimock 1.29 mocks. The
+  // adapter's submit/poll/download lifecycle is covered by unit tests
+  // (packages/ai-openrouter/tests/video-adapter.test.ts). Add it here when
+  // aimock learns the OpenRouter job endpoints.
   'video-gen': new Set(['openai']),
   // image-to-video (image parts in the generateVideo prompt). aimock 1.29's
   // `/v1/videos` handler parses Sora's multipart upload (the SDK switches to
   // multipart when `input_reference` carries a File) and matches on the
   // `prompt` form field, so the OpenAI/Sora route runs end-to-end. fal's
-  // endpoint-specific fields remain unit-test-only.
+  // endpoint-specific fields and OpenRouter's `frame_images` /
+  // `input_references` mapping remain unit-test-only.
   'image-to-video': new Set(['openai']),
   // Only Gemini currently surfaces a first-class stateful conversation API via
   // the adapter (geminiTextInteractions, behind @tanstack/ai-gemini/experimental).
