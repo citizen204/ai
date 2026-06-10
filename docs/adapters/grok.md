@@ -2,7 +2,7 @@
 title: Grok (xAI)
 id: grok-adapter
 order: 5
-description: "Use xAI Grok models with TanStack AI — Grok 4.1, Grok 4, Grok 3, and Grok 2 Image generation via @tanstack/ai-grok."
+description: "Use xAI Grok models with TanStack AI — Grok 4.1, Grok 4, Grok 3, Grok 2 Image generation, and Grok Imagine video generation via @tanstack/ai-grok."
 keywords:
   - tanstack ai
   - grok
@@ -10,10 +10,12 @@ keywords:
   - grok 4
   - grok 4.1
   - image generation
+  - video generation
+  - grok imagine
   - adapter
 ---
 
-The Grok adapter provides access to xAI's Grok models, including Grok 4.1, Grok 4, Grok 3, and image generation with Grok 2 Image.
+The Grok adapter provides access to xAI's Grok models, including Grok 4.1, Grok 4, Grok 3, image generation with Grok 2 Image, and video generation with the Grok Imagine video models.
 
 ## Installation
 
@@ -160,6 +162,58 @@ const result = await generateImage({
 console.log(result.images);
 ```
 
+## Video Generation (Experimental)
+
+Generate short video clips (1–15 seconds, with audio) with the Grok Imagine video models via xAI's asynchronous jobs/polling API:
+
+```typescript
+import { generateVideo, getVideoJobStatus } from "@tanstack/ai";
+import { grokVideo } from "@tanstack/ai-grok";
+
+const adapter = grokVideo("grok-imagine-video");
+
+// 1. Create the job
+const { jobId } = await generateVideo({
+  adapter,
+  prompt: "A red panda balancing on a bamboo stalk in the rain",
+  size: "16:9_720p", // "aspectRatio" or "aspectRatio_resolution"
+  duration: 5, // integer seconds, 1–15
+});
+
+// 2. Poll until complete, then read the video URL
+let status = await getVideoJobStatus({ adapter, jobId });
+while (status.status !== "completed" && status.status !== "failed") {
+  await new Promise((r) => setTimeout(r, 5000));
+  status = await getVideoJobStatus({ adapter, jobId });
+}
+
+console.log(status.url); // hosted .mp4 URL
+```
+
+Available models:
+
+- `grok-imagine-video` — text-to-video and image-to-video, $0.05 per second of video
+- `grok-imagine-video-1.5-preview` — preview of the next model generation, $0.08 per second
+
+Like the Grok Imagine image models, sizing is aspect-ratio based: the `size` option takes an `aspectRatio_resolution` template. Supported aspect ratios are `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `3:2`, and `2:3`; supported resolutions are `480p`, `720p`, and `1080p` (e.g. `"9:16_1080p"`). The resolution suffix is optional.
+
+For image-to-video, pass a starting frame via `modelOptions.image` — a public URL or a base64 data URI:
+
+```typescript
+const { jobId } = await generateVideo({
+  adapter: grokVideo("grok-imagine-video"),
+  prompt: "Make the waterfall crash down and slowly pan out the camera",
+  duration: 10,
+  modelOptions: {
+    image: { url: "https://example.com/waterfall-still.png" },
+  },
+});
+```
+
+When the job completes, the adapter reports usage on the result: `usage.unitsBilled` carries the billed seconds of video and `usage.cost` the exact cost in USD, both as returned by the xAI API.
+
+See [Video Generation](../media/video-generation) for the full jobs/polling flow, streaming mode, and the `useGenerateVideo` hook.
+
 ## Text-to-Speech
 
 Generate speech with Grok TTS:
@@ -262,6 +316,10 @@ Creates a Grok summarization adapter with an explicit API key.
 ### `grokImage(model, config?)` / `createGrokImage(model, apiKey, config?)`
 
 Creates a Grok image generation adapter.
+
+### `grokVideo(model, config?)` / `createGrokVideo(model, apiKey, config?)`
+
+Creates a Grok video generation adapter (experimental) for the Grok Imagine video models (`'grok-imagine-video'`, `'grok-imagine-video-1.5-preview'`).
 
 ### `grokSpeech(model, config?)` / `createGrokSpeech(model, apiKey, config?)`
 

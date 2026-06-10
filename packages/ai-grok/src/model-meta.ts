@@ -219,6 +219,42 @@ const GROK_2_IMAGE = {
   },
 } as const satisfies ModelMeta
 
+// Imagine API video models. Pricing is per second of generated video
+// (output only); generated videos carry an audio track.
+const GROK_IMAGINE_VIDEO = {
+  name: 'grok-imagine-video',
+  supports: {
+    input: ['text', 'image'],
+    output: ['video', 'audio'],
+  },
+  pricing: {
+    input: {
+      normal: 0,
+    },
+    output: {
+      // per second of video
+      normal: 0.05,
+    },
+  },
+} as const satisfies ModelMeta
+
+const GROK_IMAGINE_VIDEO_1_5_PREVIEW = {
+  name: 'grok-imagine-video-1.5-preview',
+  supports: {
+    input: ['text', 'image'],
+    output: ['video', 'audio'],
+  },
+  pricing: {
+    input: {
+      normal: 0,
+    },
+    output: {
+      // per second of video
+      normal: 0.08,
+    },
+  },
+} as const satisfies ModelMeta
+
 /**
  * Grok Chat Models
  * Based on xAI's available models as of 2025
@@ -351,6 +387,16 @@ export const GROK_COMBINED_TOOLS_AND_SCHEMA_MODELS = new Set<string>([
  */
 export const GROK_IMAGE_MODELS = [GROK_2_IMAGE.name] as const
 
+/**
+ * Grok Video Generation Models (xAI Imagine API)
+ *
+ * @experimental Video generation is an experimental feature and may change.
+ */
+export const GROK_VIDEO_MODELS = [
+  GROK_IMAGINE_VIDEO.name,
+  GROK_IMAGINE_VIDEO_1_5_PREVIEW.name,
+] as const
+
 // xAI's `/v1/tts` endpoint is endpoint-addressed and does not take a `model`
 // parameter. This synthetic identifier satisfies the SDK's `TTSOptions.model`
 // contract and provides a stable value for logging and fixture matching.
@@ -404,6 +450,7 @@ export const GROK_REALTIME_MODELS = [
 
 export type GrokChatModel = (typeof GROK_CHAT_MODELS)[number]
 export type GrokImageModel = (typeof GROK_IMAGE_MODELS)[number]
+export type GrokVideoModel = (typeof GROK_VIDEO_MODELS)[number]
 export type GrokTTSModel = (typeof GROK_TTS_MODELS)[number]
 export type GrokTranscriptionModel = (typeof GROK_TRANSCRIPTION_MODELS)[number]
 export type GrokRealtimeModel = (typeof GROK_REALTIME_MODELS)[number]

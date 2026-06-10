@@ -4,8 +4,8 @@ description: >
   Image, audio, video, speech (TTS), and transcription generation using
   activity-specific adapters: generateImage() with openaiImage/geminiImage,
   generateAudio() with geminiAudio/falAudio, generateVideo() with async
-  polling, generateSpeech() with openaiSpeech, generateTranscription() with
-  openaiTranscription. React hooks: useGenerateImage, useGenerateAudio,
+  polling (openaiVideo/grokVideo/falVideo), generateSpeech() with
+  openaiSpeech, generateTranscription() with openaiTranscription. React hooks: useGenerateImage, useGenerateAudio,
   useGenerateSpeech, useTranscription, useGenerateVideo.
   TanStack Start server function integration with toServerSentEventsResponse.
 type: sub-skill
@@ -330,6 +330,12 @@ const stream = generateVideo({
 })
 return toServerSentEventsResponse(stream)
 ```
+
+Video adapters: `openaiVideo('sora-2')` (pixel sizes like `'1280x720'`,
+durations 4/8/12s), `grokVideo('grok-imagine-video')` (aspect-ratio size
+template like `'16:9_720p'`, integer durations 1-15s, image-to-video via
+`modelOptions.image: { url }`, reports `usage.unitsBilled` seconds and exact
+`usage.cost`), and `falVideo(...)` (hosted models, see cost tracking below).
 
 Client hook with job tracking:
 
