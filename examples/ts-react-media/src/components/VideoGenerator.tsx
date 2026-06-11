@@ -20,7 +20,7 @@ type JobState =
       model: string
       progress?: number | undefined
     }
-  | { status: 'completed'; url: string; unitsBilled?: number }
+  | { status: 'completed'; url: string; unitsBilled?: number; cost?: number }
   | { status: 'error'; message: string }
 
 interface VideoGeneratorProps {
@@ -99,6 +99,7 @@ export default function VideoGenerator({
             status: 'completed',
             url: url,
             unitsBilled: urlResult.usage?.unitsBilled,
+            cost: urlResult.usage?.cost,
           },
         }))
       } else if (status.status === 'processing') {
@@ -159,8 +160,11 @@ export default function VideoGenerator({
         },
       }))
 
+      // Poll keyed by the UI model id, not result.model: the direct-xAI
+      // entries share one adapter model ('grok-imagine-video'), so
+      // result.model wouldn't identify the card (or the adapter) uniquely.
       const interval = setInterval(() => {
-        pollStatus(result.jobId, result.model)
+        pollStatus(result.jobId, modelId)
       }, 4000)
       pollingRefs.current.set(modelId, interval)
     } catch (err) {
@@ -401,12 +405,21 @@ export default function VideoGenerator({
                         className="w-full h-auto"
                       />
                     </div>
-                    {state.unitsBilled != null && (
+                    {state.cost != null ? (
                       <p className="text-xs text-gray-500">
-                        Billed {state.unitsBilled} fal unit
-                        {state.unitsBilled === 1 ? '' : 's'} — multiply by the
-                        endpoint unit price for USD cost
+                        Billed ${state.cost.toFixed(3)}
+                        {state.unitsBilled != null
+                          ? ` for ${state.unitsBilled} second${state.unitsBilled === 1 ? '' : 's'} of video`
+                          : ''}
                       </p>
+                    ) : (
+                      state.unitsBilled != null && (
+                        <p className="text-xs text-gray-500">
+                          Billed {state.unitsBilled} fal unit
+                          {state.unitsBilled === 1 ? '' : 's'} — multiply by the
+                          endpoint unit price for USD cost
+                        </p>
+                      )
                     )}
                   </>
                 )}

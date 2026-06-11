@@ -111,6 +111,18 @@ export const VIDEO_MODELS = [
     mode: 'image-to-video' as const,
   },
   {
+    id: 'grok-imagine-video',
+    name: 'Grok Imagine Video (xAI Direct, Text-to-Video)',
+    description: 'xAI Imagine API via the native grokVideo adapter',
+    mode: 'text-to-video' as const,
+  },
+  {
+    id: 'grok-imagine-video/image-to-video',
+    name: 'Grok Imagine Video (xAI Direct, Image-to-Video)',
+    description: 'Animate a starting frame via the native grokVideo adapter',
+    mode: 'image-to-video' as const,
+  },
+  {
     id: 'fal-ai/ltx-2.3/text-to-video/fast',
     name: 'LTX-2.3 Fast (Text-to-Video)',
     description: 'Fast text-to-video generation',

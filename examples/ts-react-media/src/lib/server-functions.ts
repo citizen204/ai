@@ -1,9 +1,23 @@
 import { createServerFn } from '@tanstack/react-start'
 import { falImage, falVideo } from '@tanstack/ai-fal'
 import { geminiImage } from '@tanstack/ai-gemini'
+import { grokVideo } from '@tanstack/ai-grok'
 import { generateImage, generateVideo, getVideoJobStatus } from '@tanstack/ai'
 
-import type { FalModel } from '@tanstack/ai-fal'
+/**
+ * Resolves the video adapter for a UI model id. The grok-imagine entries hit
+ * xAI's Imagine API directly via the native grokVideo adapter; everything
+ * else is a fal-hosted model.
+ */
+function videoAdapterForModel(model: string) {
+  if (
+    model === 'grok-imagine-video' ||
+    model === 'grok-imagine-video/image-to-video'
+  ) {
+    return grokVideo('grok-imagine-video')
+  }
+  return falVideo(model)
+}
 
 export const generateImageFn = createServerFn({ method: 'POST' })
   .inputValidator((data: { prompt: string; model: string }) => {
@@ -151,6 +165,18 @@ export const createVideoJobFn = createServerFn({ method: 'POST' })
           },
         })
       }
+      case 'grok-imagine-video': {
+        // Direct xAI Imagine API (XAI_API_KEY) — no fal in between. Sizing is
+        // an "aspectRatio_resolution" template; durations are 1-15 integer
+        // seconds. Completed jobs report usage.unitsBilled (billed seconds)
+        // and usage.cost (exact USD).
+        return generateVideo({
+          adapter: grokVideo('grok-imagine-video'),
+          prompt: data.prompt,
+          size: '16:9_720p',
+          duration: 5,
+        })
+      }
       case 'fal-ai/ltx-2.3/text-to-video/fast': {
         return generateVideo({
           adapter: falVideo('fal-ai/ltx-2.3/text-to-video/fast'),
@@ -199,6 +225,21 @@ export const createVideoJobFn = createServerFn({ method: 'POST' })
           },
         })
       }
+      case 'grok-imagine-video/image-to-video': {
+        if (!data.imageUrl)
+          throw new Error('Image URL is required for image-to-video')
+        // The starting frame goes through modelOptions.image — a public URL
+        // or a base64 data URI (which is what the upload flow produces).
+        return generateVideo({
+          adapter: grokVideo('grok-imagine-video'),
+          prompt: data.prompt,
+          size: '16:9_720p',
+          duration: 5,
+          modelOptions: {
+            image: { url: data.imageUrl },
+          },
+        })
+      }
       case 'fal-ai/ltx-2.3/image-to-video/fast': {
         if (!data.imageUrl)
           throw new Error('Image URL is required for image-to-video')
@@ -217,9 +258,9 @@ export const createVideoJobFn = createServerFn({ method: 'POST' })
   })
 
 export const getVideoStatusFn = createServerFn({ method: 'GET' })
-  .inputValidator((data: { jobId: string; model: FalModel }) => data)
+  .inputValidator((data: { jobId: string; model: string }) => data)
   .handler(async ({ data }) => {
-    const adapter = falVideo(data.model)
+    const adapter = videoAdapterForModel(data.model)
     return await getVideoJobStatus({
       adapter,
       jobId: data.jobId,
@@ -229,7 +270,7 @@ export const getVideoStatusFn = createServerFn({ method: 'GET' })
 export const getVideoUrlFn = createServerFn({ method: 'GET' })
   .inputValidator((data: { jobId: string; model: string }) => data)
   .handler(async ({ data }) => {
-    const adapter = falVideo(data.model)
+    const adapter = videoAdapterForModel(data.model)
     return await getVideoJobStatus({
       adapter,
       jobId: data.jobId,
