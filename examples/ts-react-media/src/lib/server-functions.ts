@@ -11,10 +11,10 @@ import { generateImage, generateVideo, getVideoJobStatus } from '@tanstack/ai'
  */
 function videoAdapterForModel(model: string) {
   if (
-    model === 'grok-imagine-video' ||
-    model === 'grok-imagine-video/image-to-video'
+    model === 'grok-imagine-video-1.5-preview' ||
+    model === 'grok-imagine-video-1.5-preview/image-to-video'
   ) {
-    return grokVideo('grok-imagine-video')
+    return grokVideo('grok-imagine-video-1.5-preview')
   }
   return falVideo(model)
 }
@@ -165,13 +165,13 @@ export const createVideoJobFn = createServerFn({ method: 'POST' })
           },
         })
       }
-      case 'grok-imagine-video': {
+      case 'grok-imagine-video-1.5-preview': {
         // Direct xAI Imagine API (XAI_API_KEY) — no fal in between. Sizing is
         // an "aspectRatio_resolution" template; durations are 1-15 integer
         // seconds. Completed jobs report usage.unitsBilled (billed seconds)
         // and usage.cost (exact USD).
         return generateVideo({
-          adapter: grokVideo('grok-imagine-video'),
+          adapter: grokVideo('grok-imagine-video-1.5-preview'),
           prompt: data.prompt,
           size: '16:9_720p',
           duration: 5,
@@ -225,13 +225,13 @@ export const createVideoJobFn = createServerFn({ method: 'POST' })
           },
         })
       }
-      case 'grok-imagine-video/image-to-video': {
+      case 'grok-imagine-video-1.5-preview/image-to-video': {
         if (!data.imageUrl)
           throw new Error('Image URL is required for image-to-video')
         // The starting frame goes through modelOptions.image — a public URL
         // or a base64 data URI (which is what the upload flow produces).
         return generateVideo({
-          adapter: grokVideo('grok-imagine-video'),
+          adapter: grokVideo('grok-imagine-video-1.5-preview'),
           prompt: data.prompt,
           size: '16:9_720p',
           duration: 5,

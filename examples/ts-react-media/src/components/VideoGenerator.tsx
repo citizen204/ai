@@ -41,6 +41,8 @@ export default function VideoGenerator({
   const pollingRefs = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   const filteredModels = VIDEO_MODELS.filter((m) => m.mode === mode)
+  const falModels = filteredModels.filter((m) => m.provider === 'fal')
+  const xaiModels = filteredModels.filter((m) => m.provider === 'xai')
 
   useEffect(() => {
     if (initialImageUrl) {
@@ -161,8 +163,8 @@ export default function VideoGenerator({
       }))
 
       // Poll keyed by the UI model id, not result.model: the direct-xAI
-      // entries share one adapter model ('grok-imagine-video'), so
-      // result.model wouldn't identify the card (or the adapter) uniquely.
+      // entries share one adapter model ('grok-imagine-video-1.5-preview'),
+      // so result.model wouldn't identify the card (or the adapter) uniquely.
       const interval = setInterval(() => {
         pollStatus(result.jobId, modelId)
       }, 4000)
@@ -248,11 +250,20 @@ export default function VideoGenerator({
             className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
           >
             <option value="all">All Models</option>
-            {filteredModels.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.name}
-              </option>
-            ))}
+            <optgroup label="fal.ai">
+              {falModels.map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="xAI (direct)">
+              {xaiModels.map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </div>
 
