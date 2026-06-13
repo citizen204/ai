@@ -56,7 +56,7 @@
     "text-to-speech"
   ],
   "dependencies": {
-    "@google/genai": "^1.43.0",
+    "@google/genai": "^1.52.0",
     "@tanstack/ai-utils": "workspace:*"
   },
   "peerDependencies": {
@@ -64,8 +64,8 @@
   },
   "devDependencies": {
     "@tanstack/ai": "workspace:*",
-    "@vitest/coverage-v8": "4.0.14",
-    "vite": "^7.3.3",
-    "zod": "^4.2.0"
+    "@vitest/coverage-v8": "4.1.8",
+    "vite": "^7.3.5",
+    "zod": "^4.4.3"
   }
 }

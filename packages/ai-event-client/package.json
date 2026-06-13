@@ -34,13 +34,13 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.4.1"
+    "@tanstack/devtools-event-client": "^0.4.3"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:*"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.0.14"
+    "@vitest/coverage-v8": "4.1.8"
   },
   "keywords": [
     "ai",

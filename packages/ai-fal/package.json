@@ -55,8 +55,8 @@
   },
   "devDependencies": {
     "@tanstack/ai": "workspace:*",
-    "@vitest/coverage-v8": "4.0.14",
-    "vite": "^7.3.3"
+    "@vitest/coverage-v8": "4.1.8",
+    "vite": "^7.3.5"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:*"

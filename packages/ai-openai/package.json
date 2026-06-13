@@ -60,7 +60,7 @@
   "dependencies": {
     "@tanstack/ai-utils": "workspace:*",
     "@tanstack/openai-base": "workspace:*",
-    "openai": "^6.41.0"
+    "openai": "^6.42.0"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:^",
@@ -70,8 +70,8 @@
   "devDependencies": {
     "@tanstack/ai": "workspace:*",
     "@tanstack/ai-client": "workspace:*",
-    "@vitest/coverage-v8": "4.0.14",
-    "vite": "^7.3.3",
-    "zod": "^4.2.0"
+    "@vitest/coverage-v8": "4.1.8",
+    "vite": "^7.3.5",
+    "zod": "^4.4.3"
   }
 }

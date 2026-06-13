@@ -52,7 +52,7 @@
     "tanstack-intent"
   ],
   "dependencies": {
-    "esbuild": "^0.25.12"
+    "esbuild": "^0.28.1"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:*",
@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@tanstack/ai": "workspace:*",
-    "@vitest/coverage-v8": "4.0.14",
-    "zod": "^4.2.0"
+    "@vitest/coverage-v8": "4.1.8",
+    "zod": "^4.4.3"
   }
 }

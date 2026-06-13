@@ -50,8 +50,8 @@
     "structured-outputs"
   ],
   "devDependencies": {
-    "@vitest/coverage-v8": "4.0.14",
-    "vite": "^7.3.3"
+    "@vitest/coverage-v8": "4.1.8",
+    "vite": "^7.3.5"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:^",
@@ -60,6 +60,6 @@
   "dependencies": {
     "@tanstack/ai-utils": "workspace:*",
     "@tanstack/openai-base": "workspace:*",
-    "openai": "^6.41.0"
+    "openai": "^6.42.0"
   }
 }

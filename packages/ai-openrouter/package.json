@@ -52,14 +52,14 @@
     "model-router"
   ],
   "dependencies": {
-    "@openrouter/sdk": "0.12.35",
+    "@openrouter/sdk": "0.12.79",
     "@tanstack/ai-utils": "workspace:*"
   },
   "devDependencies": {
     "@tanstack/ai": "workspace:*",
-    "@vitest/coverage-v8": "4.0.14",
-    "vite": "^7.3.3",
-    "zod": "^4.2.0"
+    "@vitest/coverage-v8": "4.1.8",
+    "vite": "^7.3.5",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "@tanstack/ai": "workspace:^"
